@@ -37,7 +37,11 @@ let Query = new GraphQLObjectType({
     // e.g. introspect available queries
     // Needs to take in userType, blogpostType etc
     // so it is connected to schema
-    presetFunctions:{type: userType},
+    presetFunctions:{
+      name: 'presetMutator',
+      description: 'this is an anchor for Nala mutators',
+      type: userType
+    },
   }
 });
 
@@ -45,7 +49,11 @@ let Mutation = new GraphQLObjectType({
   name: 'mutation',
   description: 'this is the root mutation',
   fields: {
-    presentMutator:{type: userType},
+    presetMutator:{
+      name: 'presetMutator',
+      description: 'this is an anchor for Nala mutators',
+      type: userType
+    },
   }
 });
 

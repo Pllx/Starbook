@@ -32,12 +32,39 @@ var Page = React.createClass({
           }`,
         'variables': {'name':String(selection.name)}
       };
-      $.post('/', query, function(response) {
+      $.post('/gql', query, function(response) {
         console.log('GOT RESPONSE FROM GET USER',response);
         var user = response.data.getUser;
         this.setState({
           selected : user,
           friends : user.friends
+        });
+      }.bind(this));
+    },
+
+    getUsers_gql: function() {
+      var query = {
+        'query' : `query queryUser {
+                        getUsers {
+                          name,
+                          gender,
+                          species,
+                          birthyear,
+                          homeworld,
+                          friends {
+                            name,
+                            homeworld
+                          }
+                        }
+                      }`,
+      };
+      $.post('/gql', query, function(response) {
+        console.log('Retrieving all users',response.data);
+        var users = response.data.getUsers;
+        this.setState({
+          selected : users[0],
+          options : users,
+          friends : users[0].friends
         });
       }.bind(this));
     },
@@ -54,30 +81,50 @@ var Page = React.createClass({
     componentDidMount : function() {
       console.log('in component did mount');
       //get from database
-      var query = {
-        'query' : `query queryUser {
-                        getUsers {
-                          name,
-                          gender,
-                          species,
-                          birthyear,
-                          homeworld,
-                          friends {
-                            name,
-                            homeworld
-                          }
-                        }
-                      }`,
+      // var query = {
+      //   'query' : `query queryUser {
+      //                   getUsers {
+      //                     name,
+      //                     gender,
+      //                     species,
+      //                     birthyear,
+      //                     homeworld,
+      //                     friends {
+      //                       name,
+      //                       homeworld
+      //                     }
+      //                   }
+      //                 }`,
+      // };
+      // $.post('/gql', query, function(response) {
+      //   console.log('Retrieving all users',response.data);
+      //   var users = response.data.getUsers;
+      //   this.setState({
+      //     selected : users[0],
+      //     options : users,
+      //     friends : users[0].friends
+      //   });
+      // }.bind(this));
+      var intro1query = {
+        'query' : `{__schema {
+          queryType {
+            name
+          }
+        }}`
       };
-      $.post('/', query, function(response) {
-        console.log('Retrieving all users',response.data);
-        var users = response.data.getUsers;
-        this.setState({
-          selected : users[0],
-          options : users,
-          friends : users[0].friends
-        });
-      }.bind(this));
+      var intro2query = {
+        'query' : `{__type(name:"query") {
+          name,
+          fields {
+            name,
+            description
+          }
+        }}`
+      };
+      $.post('/gql', intro2query, function(response) {
+        console.log('introspection',response);
+      });
+      this.getUsers_gql();
     },
 
     render : function() {

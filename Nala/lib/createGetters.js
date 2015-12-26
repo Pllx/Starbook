@@ -27,7 +27,10 @@ function CreateGetters(modelNames, typeMap, queryFields, tables){
     }
 
     //singular, e.g. getUser
+
     queryFields[getterName] = {
+      name: getterName,
+      description: 'test in createGetters(singular)',
       type: typeMap[modelNames[i]]
     };
 
@@ -53,6 +56,8 @@ function CreateGetters(modelNames, typeMap, queryFields, tables){
 
     //plural, e.g. getUsers
     queryFields[getterNamePlural] = {
+      name: getterNamePlural,
+      description: 'test in createGetters(plural)',
       type: new GraphQLList(typeMap[modelNames[i]])
     };
 
