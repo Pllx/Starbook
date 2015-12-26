@@ -79,40 +79,14 @@ var Page = React.createClass({
     },
 
     componentDidMount : function() {
-      console.log('in component did mount');
-      //get from database
-      // var query = {
-      //   'query' : `query queryUser {
-      //                   getUsers {
-      //                     name,
-      //                     gender,
-      //                     species,
-      //                     birthyear,
-      //                     homeworld,
-      //                     friends {
-      //                       name,
-      //                       homeworld
-      //                     }
-      //                   }
-      //                 }`,
-      // };
-      // $.post('/gql', query, function(response) {
-      //   console.log('Retrieving all users',response.data);
-      //   var users = response.data.getUsers;
-      //   this.setState({
-      //     selected : users[0],
-      //     options : users,
-      //     friends : users[0].friends
-      //   });
-      // }.bind(this));
-      var intro1query = {
+      var schemaQueryIntrospection = {
         'query' : `{__schema {
           queryType {
             name
           }
         }}`
       };
-      var intro2query = {
+      var queryIntrospection = {
         'query' : `{__type(name:"query") {
           name,
           fields {
@@ -121,7 +95,23 @@ var Page = React.createClass({
           }
         }}`
       };
-      $.post('/gql', intro2query, function(response) {
+      var schemaMutationIntrospection = {
+        'query' : `{__schema {
+          mutationType {
+            name
+          }
+        }}`
+      };
+      var mutationIntrospection = {
+        'query' : `{__type(name:"mutation") {
+          name,
+          fields {
+            name,
+            description
+          }
+        }}`
+      };
+      $.post('/gql', mutationIntrospection, function(response) {
         console.log('introspection',response);
       });
       this.getUsers_gql();

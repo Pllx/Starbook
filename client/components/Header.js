@@ -13,7 +13,7 @@ var Header = React.createClass({
       return (
         <div style={styles.background}>
           <div style={styles.title}>
-            <img src="http://fontmeme.com/embed.php?text=Relay%20Swapi&name=Starjedi.ttf&size=50&style_color=FFFFFF" />
+            <img src="http://fontmeme.com/embed.php?text=Starbook&name=Starjedi.ttf&size=50&style_color=FFFFFF" />
           </div>
         </div>
       )
