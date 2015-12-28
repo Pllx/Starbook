@@ -11,9 +11,7 @@ var Footer = require('./Footer');
 var Page = React.createClass({
 
     // Helper methods:
-    updateSelected: function(selection) {
-      console.log('Ouch!!', selection.name);
-
+    getFriends_graphql: function(selection) {
       var user = {'name' : selection.name};
       var query = {
         'query' : `
@@ -32,7 +30,7 @@ var Page = React.createClass({
           }`,
         'variables': {'name':String(selection.name)}
       };
-      $.post('/gql', query, function(response) {
+      $.post('/graphql', query, function(response) {
         console.log('GOT RESPONSE FROM GET USER',response);
         var user = response.data.getUser;
         this.setState({
@@ -42,7 +40,43 @@ var Page = React.createClass({
       }.bind(this));
     },
 
-    getUsers_gql: function() {
+    getFriends_restful: function(selection) {
+      console.log('selection',selection);
+      $.get('/friends', {name: selection.name}, function(friends) {
+        this.setState({
+          selected : selection,
+          friends : friends,
+        });
+      }.bind(this));
+    },
+
+    updateSelected: function(selection /*,graphql*/) {
+      this.getFriends_graphql(selection);
+      //this.getFriends_restful(selection);
+      /*
+      (graphql) ? this.getFriends_graphql(selection) : this.getFriends_restful(selection);
+      */
+
+    },
+
+    getUsers_restful: function() {
+      $.get('/users', function(users) {
+        console.log('received users', users);
+        this.setState({
+          selected : users[0],
+          options : users
+        });
+
+        $.get('/friends', {name: users[0].name}, function(friends) {
+          console.log('received friends', friends);
+          this.setState({
+            friends : friends
+          });
+        }.bind(this));
+      }.bind(this));
+    },
+
+    getUsers_graphql: function() {
       var query = {
         'query' : `query queryUser {
                         getUsers {
@@ -58,7 +92,7 @@ var Page = React.createClass({
                         }
                       }`,
       };
-      $.post('/gql', query, function(response) {
+      $.post('/graphql', query, function(response) {
         console.log('Retrieving all users',response.data);
         var users = response.data.getUsers;
         this.setState({
@@ -111,10 +145,11 @@ var Page = React.createClass({
           }
         }}`
       };
-      $.post('/gql', mutationIntrospection, function(response) {
-        console.log('introspection',response);
-      });
-      this.getUsers_gql();
+      // $.post('/graphql', mutationIntrospection, function(response) {
+      //   console.log('introspection',response);
+      // });
+      this.getUsers_graphql();
+      //this.getUsers_restful();
     },
 
     render : function() {

@@ -55,7 +55,7 @@ app.get('/friends', function(req, res) {
 /* GraphQL */
 
 let graphQLHandler = Nala(Schema, pgURI);
-app.use('/gql', graphQLHandler);
+app.use('/graphql', graphQLHandler);
 
 app.listen(process.env.PORT ||  3000, function(){
   console.log('Server is listening on port 3000');
